@@ -12,8 +12,8 @@ plugins {
     id 'project-report'
     id 'eclipse'
     id 'idea'
-    id "com.github.spotbugs" version "${spotbugsVersion}"
-    id "com.diffplug.gradle.spotless" version "${spotlessVersion}"
+    //id "com.github.spotbugs" version "${spotbugsVersion}"
+    //id "com.diffplug.gradle.spotless" version "${spotlessVersion}"
     id 'com.github.johnrengelman.shadow' version "${shadowVersion}"
     id 'com.kncept.junit.reporter' version "${junitReportVersion}"
 }
@@ -50,48 +50,48 @@ shadowJar {
 // https://github.com/diffplug/spotless/tree/master/plugin-gradle
 // https://javadoc.io/static/com.diffplug.spotless/spotless-plugin-gradle/3.28.1/com/diffplug/gradle/spotless/FormatExtension.html
 // spotlessApply
-spotless {
-    java {
-        eclipse().configFile 'config/spotless/spotless.xml'
-        target '**/*.java'
-        importOrder '\\#', ''
-    }
-}
+// spotless {
+//     java {
+//         eclipse().configFile 'config/spotless/spotless.xml'
+//         target '**/*.java'
+//         importOrder '\\#', ''
+ //    }
+// }
 
 // spotbugs Plugin Custom Task
 // https://spotbugs.readthedocs.io/en/latest/index.html
 // https://spotbugs-gradle-plugin.netlify.com/com/github/spotbugs/snom/spotbugstask
-spotbugs {
-    effort = 'max'
-    reportLevel = 'default'
-    projectName = "${title}"
-    maxHeapSize = '1g'
-    showProgress = true
-    extraArgs = [ '-nested:false' ]
-    jvmArgs = [ '-Duser.language=ja' ]
+// spotbugs {
+//     effort = 'max'
+//     reportLevel = 'default'
+//     projectName = "${title}"
+//     maxHeapSize = '1g'
+//     showProgress = true
+//     extraArgs = [ '-nested:false' ]
+//     jvmArgs = [ '-Duser.language=ja' ]
 
-    spotbugsMain {
-        sourceDirs = sourceSets.main.allSource
-        classDirs = sourceSets.main.output
-        auxClassPaths = sourceSets.main.compileClasspath
-        ignoreFailures = true
+//     spotbugsMain {
+//         sourceDirs = sourceSets.main.allSource
+//         classDirs = sourceSets.main.output
+//         auxClassPaths = sourceSets.main.compileClasspath
+//         ignoreFailures = true
 
-        reports {
-            html {
-                enabled = true
-                destination = file("$buildDir/reports/spotbugs/spotbugs.html")
-                stylesheet = 'fancy-hist.xsl'
-            }
-            xml {
-                enabled = false
-            }
-        }
-    }
+//         reports {
+//             html {
+//                 enabled = true
+//                 destination = file("$buildDir/reports/spotbugs/spotbugs.html")
+//                 stylesheet = 'fancy-hist.xsl'
+//             }
+//             xml {
+//                enabled = false
+//             }
+//         }
+//     }
     
-    spotbugsTest {
-        ignoreFailures = true
-    }
-}
+//     spotbugsTest {
+//         ignoreFailures = true
+//     }
+// }
 
 // jacoco Plugin Custom Task
 // https://docs.gradle.org/current/userguide/jacoco_plugin.html
