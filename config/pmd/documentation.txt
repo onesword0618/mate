@@ -1,0 +1,1 @@
+category/java/documentation.xml/CommentContent,category/java/documentation.xml/CommentRequired,category/java/documentation.xml/CommentSize,category/java/documentation.xml/UncommentedEmptyConstructor,category/java/documentation.xml/UncommentedEmptyMethodBody
