@@ -1,0 +1,211 @@
+/**
+ * build.gradle
+ * Author : onesword0618
+ */
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'checkstyle'
+    id 'pmd'
+    id 'jacoco'
+    id 'project-report'
+    id 'eclipse'
+    id 'idea'
+    id "com.github.spotbugs" version "${spotbugsVersion}"
+    id "com.diffplug.gradle.spotless" version "${spotlessVersion}"
+    id 'com.github.johnrengelman.shadow' version "${shadowVersion}"
+    id 'com.kncept.junit.reporter' version "${junitReportVersion}"
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:28.1-jre'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.19'
+    testCompile 'org.assertj:assertj-core:3.15.0'
+    testCompile 'org.mockito:mockito-core:3.3.3'
+    testCompile 'org.mockito:mockito-junit-jupiter:3.3.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+shadowJar {
+    def appName = "${title}"
+    def domain = "${domain}"
+    def applicationPackage = "${applicationPackage}"
+    def mainClass = "${mainClass}"
+    def fqcn = domain + '.' + appName + '.' + applicationPackage+ '.' + mainClass
+    mainClassName = fqcn
+}
+
+// spotless Plugin Custom Task
+// https://github.com/diffplug/spotless/tree/master/plugin-gradle
+// https://javadoc.io/static/com.diffplug.spotless/spotless-plugin-gradle/3.28.1/com/diffplug/gradle/spotless/FormatExtension.html
+// spotlessApply
+spotless {
+    java {
+        eclipse().configFile 'config/spotless/spotless.xml'
+        target '**/*.java'
+        importOrder '\\#', ''
+    }
+}
+
+// spotbugs Plugin Custom Task
+// https://spotbugs.readthedocs.io/en/latest/index.html
+// https://spotbugs-gradle-plugin.netlify.com/com/github/spotbugs/snom/spotbugstask
+spotbugs {
+    effort = 'max'
+    reportLevel = 'default'
+    projectName = "${title}"
+    maxHeapSize = '1g'
+    showProgress = true
+    extraArgs = [ '-nested:false' ]
+    jvmArgs = [ '-Duser.language=ja' ]
+
+    spotbugsMain {
+        sourceDirs = sourceSets.main.allSource
+        classDirs = sourceSets.main.output
+        auxClassPaths = sourceSets.main.compileClasspath
+        ignoreFailures = true
+
+        reports {
+            html {
+                enabled = true
+                destination = file("$buildDir/reports/spotbugs/spotbugs.html")
+                stylesheet = 'fancy-hist.xsl'
+            }
+            xml {
+                enabled = false
+            }
+        }
+    }
+    
+    spotbugsTest {
+        ignoreFailures = true
+    }
+}
+
+// jacoco Plugin Custom Task
+// https://docs.gradle.org/current/userguide/jacoco_plugin.html
+jacoco {
+    // https://docs.gradle.org/current/dsl/org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html
+    toolVersion "${jacocoVersion}"
+    applyTo run
+    jacocoTestReport {
+        reports {
+            xml.enabled false
+            csv.enabled false
+            html.destination file("$buildDir/reports/jacoco")
+        }
+        // rule
+        // https://www.eclemma.org/jacoco/trunk/doc/api/org/jacoco/core/analysis/ICoverageNode.ElementType.html
+        // https://www.eclemma.org/jacoco/trunk/doc/api/org/jacoco/core/analysis/ICoverageNode.CounterEntity.html
+        // https://www.eclemma.org/jacoco/trunk/doc/api/org/jacoco/core/analysis/ICounter.CounterValue.html
+    }
+}
+
+// pmd Plugin Custom Task
+// https://docs.gradle.org/current/userguide/pmd_plugin.html
+pmd {
+    // https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.PmdExtension.html
+    toolVersion "${pmdVersion}"
+    ignoreFailures = true
+    consoleOutput = true
+    file('./config/pmd').eachFile {
+        buildinRuleFile -> buildinRuleFile.eachLine {
+            rule -> ruleSets = [ rule ]
+        }
+    }
+}
+
+// checkstyle Plugin Custom Task
+// https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+checkstyle {
+    toolVersion = "${checkstyleVersion}"
+    configFile file("${rootProject.projectDir}/config/checkstyle/google_checks.xml")
+    ignoreFailures true
+    sourceSets = [project.sourceSets.main]
+    // https://docs.gradle.org/current/dsl/org.gradle.api.plugins.quality.CheckstyleExtension.html
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled false
+        }
+    }
+}
+
+// application Plugin Custom Task
+// https://docs.gradle.org/current/userguide/application_plugin.html
+// gradle run
+application {
+    def appName = "${title}"
+    def domain = "${domain}"
+    def applicationPackage = "${applicationPackage}"
+    def mainClass = "${mainClass}"
+    def fqcn = domain + '.' + appName + '.' + applicationPackage+ '.' + mainClass
+
+    // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.JavaExec.html
+    tasks.withType(JavaExec) {
+        main = fqcn
+    }
+
+    // https://docs.gradle.org/current/dsl/org.gradle.jvm.application.tasks.CreateStartScripts.html
+    tasks.withType(CreateStartScripts) {
+        applicationName = appName
+        mainClassName = fqcn
+    }
+
+    startScripts {
+        applicationName = appName
+    }
+}
+
+// Java Plugin Custom Task
+// https://docs.gradle.org/current/userguide/java_plugin.html
+java {
+    def defaultEncoding = "${encoding}"
+    def javaVersion = JavaVersion.VERSION_11
+    build.mustRunAfter clean
+
+    // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.compile.JavaCompile.html
+    tasks.withType(JavaCompile) {
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
+        options.verbose = true
+        options.deprecation = true
+        options.encoding = defaultEncoding
+        options.listFiles = true
+    }
+
+    // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Jar.html
+    tasks.withType(Jar) {
+        archiveBaseName = "${domain}"
+        archiveAppendix = "${title}"
+        archiveVersion = "${jarVersion}"
+        archiveClassifier = 'SNAPSHOT'
+        archiveExtension = 'jar'
+        def appName = "${title}"
+        def domain = "${domain}"
+        def applicationPackage = "${applicationPackage}"
+        def mainClass = "${mainClass}"
+
+        // https://docs.oracle.com/en/java/javase/11/docs/specs/jar/jar.html
+        // name:value
+        manifest {
+            attributes 'Main-Class' : domain + '.' + appName + '.' + applicationPackage + '.' + mainClass
+        }
+    }
+
+    // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Javadoc.html
+    tasks.withType(Javadoc) {
+        options.charSet = defaultEncoding
+        options.encoding = defaultEncoding
+    }
+}

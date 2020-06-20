@@ -1,0 +1,15 @@
+# Line ending Config
+# https://help.github.com/en/github/using-git/configuring-git-to-handle-line-endings
+# default
+* text=auto
+*.txt text
+
+# ignore
+*.jpg -text
+*.png -text
+
+# These are explicitly windows files and should use crlf
+*.bat text eol=crlf
+
+# These are explicitly Linix files and should use lf
+*.sh text eol=lf
