@@ -7,13 +7,14 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class LoggingFormatterTest {
+class LoggingFormatterTest {
 
     @Mock
     private LogRecord mockLogRecord;
