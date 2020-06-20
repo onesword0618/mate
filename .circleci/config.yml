@@ -9,7 +9,8 @@ jobs:
 steps:
   - checkout
       - restore_cache:
-          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+          key:
+            - v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Install dependencies
           command: ./gradlew build -x test
