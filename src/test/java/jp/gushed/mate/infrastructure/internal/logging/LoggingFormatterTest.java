@@ -15,6 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+/**
+ * ロギング用のフォーマット検証クラス.
+ * 
+ * @author onesword0618
+ */
 @ExtendWith(MockitoExtension.class)
 public class LoggingFormatterTest {
 
@@ -22,7 +27,7 @@ public class LoggingFormatterTest {
     private LogRecord mockLogRecord;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
