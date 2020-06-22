@@ -4,7 +4,8 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/onesword0618/mate)
 ![GitHub last commit](https://img.shields.io/github/last-commit/onesword0618/mate)
 ![GitHub](https://img.shields.io/github/license/onesword0618/mate)
-[![CircleCI](https://circleci.com/gh/onesword0618/mate.svg?style=svg)](https://circleci.com/gh/onesword0618/mate)
+![CircleCI](https://img.shields.io/circleci/build/github/onesword0618/mate/master?token=e4ad4826e38e58a36f6f353376141888221428fb)
+
 
 ```
 
