@@ -20,6 +20,7 @@ jobs:
 
       - run:
           command: |
+            mkdir -p ~/test-results/junit/
             cd src/test/java
             # Get list of classnames of tests that should run on this node
             CLASSNAMES=$(circleci tests glob "**/*.java" \
@@ -31,6 +32,7 @@ jobs:
             GRADLE_ARGS=$(echo $CLASSNAMES | awk '{for (i=1; i<=NF; i++) print "--tests",$i}')
             echo "Prepared arguments for Gradle: $GRADLE_ARGS"
             ./gradlew test $GRADLE_ARGS
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
       - save_cache:
           paths:
             - ~/.gradle
