@@ -13,7 +13,13 @@ import jp.gushed.mate.infrastructure.internal.SystemKey;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class LoggerTest {
+/**
+ * ロガーの検証クラス.
+ * 
+ * @author onesword0618
+ *
+ */
+public class LoggerTest {
 
     @Test
     @DisplayName("ログファイルに指定のメッセージが出力されること")
