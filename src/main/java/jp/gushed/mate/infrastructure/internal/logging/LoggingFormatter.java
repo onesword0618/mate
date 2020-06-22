@@ -17,8 +17,6 @@ import java.util.logging.LogRecord;
 import jp.gushed.mate.infrastructure.internal.SystemKey;
 
 /**
- * {@docRoot}
- * 
  * ロギングを行う際の独自フォーマット。内部リソースのプロパティファイルに記載して利用する。
  * 
  * @author onesword0618
@@ -54,8 +52,8 @@ public class LoggingFormatter extends Formatter {
 
         final var message = new StringBuilder();
 
-        final var localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(record.getMillis()),
-            ZoneId.systemDefault());
+        final var localDateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(record.getMillis()), ZoneId.systemDefault());
 
         message.append(FORMATTER.format(localDateTime));
         message.append(SystemKey.BLANK.value);
